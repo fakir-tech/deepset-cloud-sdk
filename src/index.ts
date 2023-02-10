@@ -1,12 +1,8 @@
-export const Greeter = (name: string) => `Hello ${name}`;
+import { DeepsetCloudClient, IConfig } from "./deepsetCloudClient"
 
 
-export interface IConfig {
-    workspace?: string;
-    apikey?: string
-}
-
-export const initialize = () => {
-    
-    console.log(Greeter('World'));
+export const initialize = (config: IConfig) => {
+    // TODO: validate
+    console.log('Got config', config);
+    return new DeepsetCloudClient(config);
 }
