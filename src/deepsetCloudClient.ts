@@ -8,10 +8,10 @@ export interface IConfig {
 }
 
 export interface IFileUploadRequest {
+  fileName: string;
   fileContent?: string;
   fileBuffer?: Buffer;
-  metadata: Object;
-  fileName: string;
+  metadata?: Object;
 }
 
 interface IHashMap {
@@ -44,7 +44,7 @@ export class DeepsetCloudClient {
    * fileBuffer or fileContent is required
    * @param parameter
    */
-  public async uploadFile(parameter: IFileUploadRequest) {
+  public async storeFile(parameter: IFileUploadRequest) {
     let fileBuffer = parameter.fileBuffer;
     if (parameter.fileContent) {
       fileBuffer = Buffer.from(parameter.fileContent, 'utf-8');
