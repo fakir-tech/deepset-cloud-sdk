@@ -2,7 +2,7 @@
 
 # Deepset Cloud Client SDK
 
-This is an inofficial [deepset](www.deepset.ai) cloud client provided by [Fakir Technology Consultants](www.fakir.tech).
+This is an inofficial [deepset](https://www.deepset.ai) cloud client provided by [Fakir Technology Consultants GmbH](https://www.fakir.tech).
 
 If you have any questions or feedback, feel free to open an issue or contact us at info@fakir.tech
 
