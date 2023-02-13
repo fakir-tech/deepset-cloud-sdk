@@ -2,10 +2,15 @@
   "name": "deepset-cloud-sdk",
   "version": "0.0.1",
   "description": "Inoffficial for Deepset Cloud SDK",
-  "main": "lib/index.js",
+  "exports": "./index.js",
   "types": "lib/index.d.ts",
+  "type": "module",
+  "engines": {
+    "node": ">=14.16"
+  },
   "scripts": {
     "build": "which tsc",
+    "tsc:build": "tsc -p tsconfig.json",
     "build:module": "tsc -p tsconfig.module.json",
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",

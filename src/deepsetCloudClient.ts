@@ -2,47 +2,23 @@ import axios from 'axios';
 import { AxiosRequestConfig, AxiosResponse, AxiosError, AxiosInstance } from 'axios';
 
 import * as _ from 'lodash';
-import * as FormData from 'form-data';
+import FormData from 'form-data';
 // var FormData = require("form-data");
 import pLimit from 'p-limit';
-
-export interface IConfig {
-  workspace?: string;
-  apiKey?: string;
-}
-
-export interface IFileUploadRequest {
-  fileName: string;
-  fileContent?: string;
-  fileBuffer?: Buffer;
-  metadata?: Object;
-}
-
-interface IHashMap {
-  [details: string]: string;
-}
-export interface ISearchRequest {
-  query: string | string[];
-  filters?: IHashMap;
-  pipeline: string;
-}
-export interface IFilesRequest {
-    name?: string;
-    metaKey?: string;
-    metaValue?: string;
-    limit?: number;
-    before?: string;
-    after?: string;
-    pageNumber?: number;
-}
+import { IFileEntry, IFilesRequest, IFileUploadRequest, ISearchRequest, ISearchResult } from './deepsettypings.js';
 
 // const url = `https://api.cloud.deepset.ai/api/v1/workspaces/${workspace}/files`;
-const DEEPSET_CLOUD_API_BASE_URI = 'https://api.deepset.ai/api/v1';
+const DEEPSET_CLOUD_API_BASE_URI = 'https://api.cloud.deepset.ai/api/v1';
 
 /***
  * API documentation of Deepset Cloud:
  * https://docs.cloud.deepset.ai/reference/delete_file_api_v1_workspaces__workspace_name__files__file_id__delete
  */
+
+export interface IConfig {
+  workspace?: string;
+  apiKey?: string;
+}
 
 export class DeepsetCloudClient {
   private config: IConfig;
@@ -54,9 +30,35 @@ export class DeepsetCloudClient {
     this.config.workspace = this.config.workspace || 'default';
     this.httpClient = axios.create({
       baseURL: this.getWorkspaceUrl(),
-      timeout: 1000,
-      headers: { Authorization: `Bearer ${this.config.apiKey}` },
+      // timeout: 1000,
+      headers: { authorization: `Bearer ${this.config.apiKey}` },
     });
+    this.httpClient.interceptors.response.use(
+      response => response,
+      error => {
+        // console.log('http error', error);
+
+        switch (error.response.status) {
+          case 401:
+            throw new Error('Deepset Cloud API Key is invalid!');
+
+          case 500:
+            console.error('Deepset Cloud API Error 500', error.response.data);
+            throw error;
+          case 501:
+            const message =
+              'Deepset Cloud API Error 591 - means the model is going to be warmed up, please try it again in a few minutes!';
+            console.warn(message, error.response.data);
+            return Promise.reject(message);
+        }
+        console.log(`## Deepset Cloud API Error ${error.response.status} ##
+        ${error.mesage}
+        `,
+          JSON.stringify(error.response.data, null, 2),
+        );
+        Promise.reject(error.message);
+      },
+    );
   }
 
   public initialize() {
@@ -70,6 +72,7 @@ export class DeepsetCloudClient {
    */
   public async storeFile(parameter: IFileUploadRequest) {
     let fileBuffer = parameter.fileBuffer;
+
     if (parameter.fileContent) {
       fileBuffer = Buffer.from(parameter.fileContent, 'utf-8');
     }
@@ -105,56 +108,55 @@ export class DeepsetCloudClient {
     //  to receive the json object of a file by Id, we need to use 2 queries.
     //  it should be rather /files/{id} (which is instead providing the file content);
 
-    const result = await this.getFiles({after: fileId, limit: 1});
-    console.log('result', result);
-    // const {files} = result.data.
-    // console.log(files);
+    // const result = await this.getFiles({ after: fileId, limit: 1 });
+    // console.log('result', result);
+    throw new Error("Not implemented yet.");
 
-    // result.data.files[0];
-    
-      
   }
   public async getFileContent(fileId: string) {
     const url = `${this.getWorkspaceUrl()}/files/${fileId}`;
     const result = await this.httpClient.get(url);
     return result.data;
   }
+  public async removeFile(fileId: string) {
+    const url = `${this.getWorkspaceUrl()}/files/${fileId}`;
+    const result = await this.httpClient.delete(url);
+    return result.data;
+  }
+
+
   private snakeCaseKeys(obj: any) {
-    return _.mapKeys(obj, (value:any, key:string) => _.snakeCase(key));
+    return _.mapKeys(obj, (value: any, key: string) => _.snakeCase(key));
   }
 
   private async getFiles(parameters: IFilesRequest) {
     const url = `${this.getWorkspaceUrl()}/files`;
     const parametersSnake = this.snakeCaseKeys(parameters);
     const result = await this.httpClient.post(url, {
-        data: {
-          ...parametersSnake
-        },
-      });
-      console.log('getfles', result);
-      return result.data;
+      data: {
+        ...parametersSnake,
+      },
+    });
+    return result.data as IFileEntry[];
   }
-  public async removeFile(fileId: string) {}
+
 
   /**
    * The main Search functionality
    * @param parameter
    * @returns
    */
-  public async search(parameter: ISearchRequest) {
+  public async search(parameter: ISearchRequest): Promise<ISearchResult> {
     const queries = Array.isArray(parameter.query) ? parameter.query : [parameter.query];
-    const url = `${this.getWorkspaceUrl()}/pipelines/${parameter.pipeline}/search`;
+    let url = `${this.getWorkspaceUrl()}/pipelines/${parameter.pipeline}/search`;
+    const requestData = {
+      queries,
+      filters: parameter.filters,
+    };
+    const result = await this.httpClient.post(url, requestData);
+    const searchResult = result.data as ISearchResult;
 
-    const result = await this.httpClient.post(url, {
-      data: {
-        queries,
-        filters: parameter.filters,
-      },
-    });
-    if (result.status != 200) {
-      throw new Error('Search on Deepset Cloud failed - statusCode: ' + result.status);
-    }
-    return result;
+    return searchResult;
   }
 
   private async uploadFileToDeepsetCloud(parameter: IFileUploadRequest, fileBuffer: Buffer): Promise<AxiosResponse> {
@@ -163,14 +165,20 @@ export class DeepsetCloudClient {
     form.append('file', fileBuffer, parameter.fileName);
     const url = `${this.getWorkspaceUrl()}/files`;
 
-    const result = await axios({
-      method: 'post',
-      url,
-      data: form,
-      headers: {
-        'Content-Type': 'multipart/form-data',
-      },
-    });
+    let result;
+    try {
+      result = await axios({
+        method: 'post',
+        url,
+        data: form,
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      });
+    } catch (error) {
+      console.log(error);
+      throw error;
+    }
 
     if (result.status != 201) {
       throw new Error('Upload to Deepset Cloud failed - statusCode: ' + result.status);

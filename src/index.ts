@@ -1,8 +1,8 @@
-import { DeepsetCloudClient, IConfig } from "./deepsetCloudClient"
-
+import { DeepsetCloudClient, IConfig } from './deepsetCloudClient.js';
 
 export const initialize = (config: IConfig) => {
-    // TODO: validate
-    console.log('Got config', config);
-    return new DeepsetCloudClient(config);
-}
+  if (!config.apiKey) {
+    throw new Error('Deepset Cloud API Key is required!');
+  }
+  return new DeepsetCloudClient(config);
+};

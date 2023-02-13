@@ -1,6 +1,7 @@
 {
   "compilerOptions": {
-    "module": "commonjs",
+    "module": "nodenext",
+    "moduleResolution": "node16",
     "declaration": true,
     "removeComments": true,
     "emitDecoratorMetadata": true,
@@ -11,6 +12,12 @@
     "outDir": "./dist",
     "baseUrl": "./src",
     "skipLibCheck": true,
-    "typeRoots": ["node_modules/@types", "src/types"]
+    "typeRoots": ["node_modules/@types", "src/types"],
+    "esModuleInterop": true
+  },
+
+  "ts-node": {
+    "esm": true,
+    "experimentalSpecifierResolution": "node"
   }
 }
