@@ -5,22 +5,22 @@ import * as _ from 'lodash';
 import FormData from 'form-data';
 // var FormData = require("form-data");
 import pLimit from 'p-limit';
-import { IFileEntry, IFilesRequest, IFileUploadRequest, ISearchRequest, ISearchResult } from './deepsettypings.js';
+import { ISearchHistoryResponse, ISearchResult } from 'deepsetResponse.js';
+import { IFileUploadRequest, IFilesRequest, IFileEntry, ISearchRequest } from 'deepsetTypings.js';
+import { HttpClientFactory } from './httpClientService.js';
+import { IDeepsetCloudClient } from './deepsetCloudClientApi.js';
+
 
 // const url = `https://api.cloud.deepset.ai/api/v1/workspaces/${workspace}/files`;
 const DEEPSET_CLOUD_API_BASE_URI = 'https://api.cloud.deepset.ai/api/v1';
 
-/***
- * API documentation of Deepset Cloud:
- * https://docs.cloud.deepset.ai/reference/delete_file_api_v1_workspaces__workspace_name__files__file_id__delete
- */
 
 export interface IConfig {
   workspace?: string;
   apiKey?: string;
 }
 
-export class DeepsetCloudClient {
+export class DeepsetCloudClient implements IDeepsetCloudClient {
   private config: IConfig;
   private httpClient: AxiosInstance;
 
@@ -28,48 +28,13 @@ export class DeepsetCloudClient {
     // default values
     this.config = config || {};
     this.config.workspace = this.config.workspace || 'default';
-    this.httpClient = axios.create({
-      baseURL: this.getWorkspaceUrl(),
-      // timeout: 1000,
-      headers: { authorization: `Bearer ${this.config.apiKey}` },
+    this.httpClient = HttpClientFactory.createHttpClient({
+        baseURL: this.getWorkspaceUrl(),
+        bearerToken: this.config.apiKey
     });
-    this.httpClient.interceptors.response.use(
-      response => response,
-      error => {
-        // console.log('http error', error);
-
-        switch (error.response.status) {
-          case 401:
-            throw new Error('Deepset Cloud API Key is invalid!');
-
-          case 500:
-            console.error('Deepset Cloud API Error 500', error.response.data);
-            throw error;
-          case 501:
-            const message =
-              'Deepset Cloud API Error 591 - means the model is going to be warmed up, please try it again in a few minutes!';
-            console.warn(message, error.response.data);
-            return Promise.reject(message);
-        }
-        console.log(`## Deepset Cloud API Error ${error.response.status} ##
-        ${error.mesage}
-        `,
-          JSON.stringify(error.response.data, null, 2),
-        );
-        Promise.reject(error.message);
-      },
-    );
   }
 
-  public initialize() {
-    console.log('initialize');
-  }
 
-  /**
-   * Method to upload a file to the Deepset Cloud.
-   * fileBuffer or fileContent is required
-   * @param parameter
-   */
   public async storeFile(parameter: IFileUploadRequest) {
     let fileBuffer = parameter.fileBuffer;
 
@@ -86,12 +51,6 @@ export class DeepsetCloudClient {
     return result.data;
   }
 
-  /**
-   * Does upload multiple files to the Deepset Cloud
-   * concurrently with  a maximum of 10 parallel uploads.
-   * @param parameters
-   * @param maxParallelRequests Maximum number of parallel requests. Default is 10.
-   */
   public async storeFiles(parameters: IFileUploadRequest[], maxParallelRequests?: number) {
     const maxConccurrency = maxParallelRequests || 10;
 
@@ -124,6 +83,14 @@ export class DeepsetCloudClient {
     return result.data;
   }
 
+  public async getSearchHistory(pipeline:string, limit?:number, pageNumber?:number): Promise<ISearchHistoryResponse> {
+    // https://api.cloud.deepset.ai/api/v1/workspaces/{workspace_name}/pipelines/{pipeline_name}/search_history
+    const url = `${this.getWorkspaceUrl()}/pipelines/${pipeline}/search_history`;
+    const result = await this.httpClient.get(url, {
+      params: { limit, page: pageNumber }
+    });
+    return result.data;
+  }
 
   private snakeCaseKeys(obj: any) {
     return _.mapKeys(obj, (value: any, key: string) => _.snakeCase(key));
