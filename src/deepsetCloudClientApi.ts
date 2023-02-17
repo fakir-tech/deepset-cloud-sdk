@@ -35,6 +35,9 @@ export interface IDeepsetCloudClient {
 
   /**
    * Fetches the search history of a pipeline.
+   * Warning this is an experimental API and might change in the future.
+   *
+   * @experimental
    * @param pipeline
    * @param limit
    * @param pageNumber

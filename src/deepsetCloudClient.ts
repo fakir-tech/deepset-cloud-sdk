@@ -47,6 +47,10 @@ export class DeepsetCloudClient implements IDeepsetCloudClient {
     if (!fileBuffer) {
       throw new Error('No file content provided');
     }
+    if (parameter.skipDuplicates && !parameter.uniqueId) {
+      throw new Error('If you want to skil duplicates, you have to provide a uniqueId, which allows to identify the file.');
+    }
+
     const result = await this.uploadFileToDeepsetCloud(parameter, fileBuffer);
     return result.data;
   }
@@ -121,7 +125,8 @@ export class DeepsetCloudClient implements IDeepsetCloudClient {
       filters: parameter.filters,
     };
     const result = await this.httpClient.post(url, requestData);
-    const searchResult = result.data as ISearchResult;
+    const searchResult = result.data.results[0] as ISearchResult;
+
 
     return searchResult;
   }

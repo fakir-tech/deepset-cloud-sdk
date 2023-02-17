@@ -3,6 +3,8 @@ export interface IFileUploadRequest {
   fileContent?: string;
   fileBuffer?: Buffer;
   metadata?: Object;
+  skipDuplicates?: boolean;
+  uniqueId?: string;
 }
 
 interface IHashMap {
@@ -23,8 +25,6 @@ export interface IFilesRequest {
   pageNumber?: number;
 }
 
-
-export interface ISearchResult {}
 
 interface SearchHistoryEntryResult {
   search_result_history_id: string;

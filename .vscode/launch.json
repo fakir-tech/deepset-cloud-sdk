@@ -16,6 +16,18 @@
       "windows": {
         "program": "${workspaceFolder}/node_modules/jest/bin/jest"
       }
-    }
+    },
+    {
+			"name": "Debug sample.ts",
+			"type": "pwa-node",
+			"request": "launch",
+			"runtimeExecutable": "node",
+			"runtimeArgs": ["--nolazy", "-r", "ts-node-dev/register/transpile-only"],
+
+			"args": ["sample.ts"],
+			"cwd": "${workspaceRoot}",
+			"internalConsoleOptions": "openOnSessionStart",
+			"skipFiles": ["<node_internals>/**", "node_modules/**"]
+		}
   ]
 }

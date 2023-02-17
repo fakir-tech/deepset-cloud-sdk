@@ -1,3 +1,4 @@
+import { IHashMap } from "deepsetTypings.js";
 
 export interface ISearchResult {}
 
@@ -61,10 +62,11 @@ export interface ISearchHistoryResponse {
 export interface ISearchResult {
   query_id: string;
   query: string;
-  answers: any[]; // in QA cases this will be filled, otherwise []
+  answers: Answer[]; // in QA cases this will be filled, otherwise []
   documents: Document[]; // in document serach cases, this will be filled otherwise []
   _debug: any;
 }
+
 export interface Answer {
   answer: string;
   type: string;
@@ -73,7 +75,7 @@ export interface Answer {
   offsets_in_document: Offset[];
   offsets_in_context: Offset[];
   document_id: string;
-  meta: any;
+  meta: IHashMap;
   file: File;
   result_id: string;
 }
