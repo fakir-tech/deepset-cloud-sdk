@@ -1,6 +1,9 @@
 
 # Publish package
 
+* npm run build
+* npm run version
+* npm run release
 
 # Linked Packages
 
