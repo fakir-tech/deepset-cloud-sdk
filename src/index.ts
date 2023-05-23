@@ -1,4 +1,4 @@
-import { DeepsetCloudClient, IConfig } from './deepsetCloudClient.js';
+import { DeepsetCloudClient, IConfig } from './deepset-cloud-client.js';
 
 export const initialize = (config: IConfig) => {
   if (!config.apiKey) {

@@ -7,8 +7,8 @@ import FormData from 'form-data';
 import pLimit from 'p-limit';
 import { ISearchHistoryResponse, ISearchResult } from 'deepsetResponse.js';
 import { IFileUploadRequest, IFilesRequest, IFileEntry, ISearchRequest } from 'deepsetTypings.js';
-import { HttpClientFactory } from './httpClientService.js';
-import { IDeepsetCloudClient } from './deepsetCloudClientApi.js';
+import { HttpClientFactory } from './http-client-cervice.js';
+import { IDeepsetCloudClient } from './deepset-cloud-client.api.js';
 
 
 // const url = `https://api.cloud.deepset.ai/api/v1/workspaces/${workspace}/files`;
