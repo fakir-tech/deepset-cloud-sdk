@@ -12,6 +12,7 @@
     "build": "tsc -p tsconfig.json",
     "prepare-release": "run-s reset-hard test version build",
     "reset-hard": "git clean -dfx && git reset --hard && npm i",
+    "release": "git push --follow-tags origin main && npm publish",
     "test": "jest --config jestconfig.json",
     "format": "prettier --write \"src/**/*.ts\" \"src/**/*.js\"",
     "lint": "tslint -p tsconfig.json",

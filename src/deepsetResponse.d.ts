@@ -21,7 +21,6 @@ interface SearchHistoryEntry {
   time: Date;
   duration: number;
 }
-}
 
 interface SearchHistoryEntryResult {
   search_result_history_id: string;
@@ -52,7 +51,7 @@ interface SearchHistoryEntry {
   time: Date;
   duration: number;
 }
-}
+
 export interface ISearchHistoryResponse {
   data: SearchHistoryEntry[];
   has_more: boolean;
