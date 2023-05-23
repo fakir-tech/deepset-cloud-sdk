@@ -23,7 +23,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/caki0915/my-awesome-greeter.git"
+    "url": "git+https://github.com/fakir-tech/deepset-cloud-sdk.git"
   },
   "keywords": [
     "deepset",
@@ -31,12 +31,11 @@
     "nlp",
     "sdk"
   ],
-  "author": "C-J",
-  "license": "ISC",
+  "author": "Simon  / Fakir.tech",
   "bugs": {
-    "url": "https://github.com/caki0915/my-awesome-greeter/issues"
+    "url": "https://github.com/fakir-tech/deepset-cloud-sdk/issues"
   },
-  "homepage": "https://github.com/caki0915/my-awesome-greeter#readme",
+  "homepage": "hhttps://github.com/fakir-tech/deepset-cloud-sdk#readme",
   "devDependencies": {
     "@rollup/plugin-typescript": "^11.1.1",
     "@types/node": "^18.13.0",
