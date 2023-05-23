@@ -5,8 +5,8 @@ import * as _ from 'lodash';
 import FormData from 'form-data';
 // var FormData = require("form-data");
 import pLimit from 'p-limit';
-import { ISearchHistoryResponse, ISearchResult } from 'deepsetResponse.js';
-import { IFileUploadRequest, IFilesRequest, IFileEntry, ISearchRequest } from 'deepsetTypings.js';
+import { ISearchHistoryResponse, ISearchResult } from 'deepset-response.d.js';
+import { IFileUploadRequest, IFilesRequest, IFileEntry, ISearchRequest } from 'deepset-typings.d.js';
 import { HttpClientFactory } from './http-client-cervice.js';
 import { IDeepsetCloudClient } from './deepset-cloud-client.api.js';
 

@@ -1,4 +1,4 @@
-import { IHashMap } from "deepsetTypings.js";
+import { IHashMap } from "deepset-typings.d.js";
 
 export interface ISearchResult {
   test: string;

@@ -1,6 +1,6 @@
 {
   "name": "deepset-cloud-sdk",
-  "version": "0.0.2",
+  "version": "0.9.0",
   "description": "Inoffficial for Deepset Cloud SDK",
   "type": "module",
   "main": "build/deepset-cloud-sdk.umd.cjs",

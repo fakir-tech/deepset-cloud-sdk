@@ -1,5 +1,5 @@
-import { ISearchHistoryResponse } from "deepsetResponse.js";
-import { IFileUploadRequest, ISearchRequest, ISearchResult } from "deepsetTypings.js";
+import { ISearchHistoryResponse } from "deepset-response.d.js";
+import { IFileUploadRequest, ISearchRequest, ISearchResult } from "deepset-typings.d.js";
 
 /***
  * API documentation of Deepset Cloud:
