@@ -19,6 +19,7 @@ export class HttpClientFactory {
     client.interceptors.response.use(
       (response) => response,
       (error) => {
+        const message = 'Deepset Cloud API Error 591 - means the model is going to be warmed up, please try it again in a few minutes!';
         switch (error.response.status) {
           case 401:
             throw new Error('Deepset Cloud API Key is invalid!');
@@ -26,9 +27,8 @@ export class HttpClientFactory {
           case 500:
             console.error('Deepset Cloud API Error 500', error.response.data);
             throw error;
+
           case 501:
-            const message =
-              'Deepset Cloud API Error 591 - means the model is going to be warmed up, please try it again in a few minutes!';
             console.warn(message, error.response.data);
             return Promise.reject(message);
         }

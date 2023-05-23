@@ -2,7 +2,7 @@ export interface IFileUploadRequest {
   fileName: string;
   fileContent?: string;
   fileBuffer?: Buffer;
-  metadata?: Object;
+  metadata?: unknown;
   skipDuplicates?: boolean;
   uniqueId?: string;
 }

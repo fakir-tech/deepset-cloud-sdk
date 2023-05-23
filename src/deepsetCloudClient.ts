@@ -119,7 +119,7 @@ export class DeepsetCloudClient implements IDeepsetCloudClient {
    */
   public async search(parameter: ISearchRequest): Promise<ISearchResult> {
     const queries = Array.isArray(parameter.query) ? parameter.query : [parameter.query];
-    let url = `${this.getWorkspaceUrl()}/pipelines/${parameter.pipeline}/search`;
+    const url = `${this.getWorkspaceUrl()}/pipelines/${parameter.pipeline}/search`;
     const requestData = {
       queries,
       filters: parameter.filters,

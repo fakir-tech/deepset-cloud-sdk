@@ -1,6 +1,8 @@
 import { IHashMap } from "deepsetTypings.js";
 
-export interface ISearchResult {}
+export interface ISearchResult {
+  test: string;
+}
 
 export interface ISearchHistoryResponse {
   data: SearchHistoryEntry[];
